@@ -6,38 +6,48 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
     exit();
 }
 
+// 🔥 KIRA TOTAL SOALAN
+$stmt = $pdo->query("SELECT COUNT(*) as total FROM questions");
+$totalQuestions = $stmt->fetch()['total'];
+
 $success_message = null;
 $error_message = null;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    try {
-        $question = $_POST['question'];
-        $options = $_POST['options'];
-        $correct = $_POST['correct'];
+    // ❌ BLOCK kalau dah cukup 10
+    if ($totalQuestions >= 10) {
+        $error_message = "Maximum 10 questions reached!";
+    } else {
 
-        // insert question
-        $stmt = $pdo->prepare("INSERT INTO questions (question) VALUES (?)");
-        $stmt->execute([$question]);
+        try {
+            $question = $_POST['question'];
+            $options = $_POST['options'];
+            $correct = $_POST['correct'];
 
-        $qid = $pdo->lastInsertId();
+            // insert question
+            $stmt = $pdo->prepare("INSERT INTO questions (question) VALUES (?)");
+            $stmt->execute([$question]);
 
-        // insert options
-        foreach ($options as $i => $opt) {
-            $is_correct = ($i == $correct) ? 1 : 0;
+            $qid = $pdo->lastInsertId();
 
-            $stmt = $pdo->prepare("
-                INSERT INTO options (question_id, option_text, is_correct)
-                VALUES (?, ?, ?)
-            ");
+            // insert options
+            foreach ($options as $i => $opt) {
+                $is_correct = ($i == $correct) ? 1 : 0;
 
-            $stmt->execute([$qid, $opt, $is_correct]);
+                $stmt = $pdo->prepare("
+                    INSERT INTO options (question_id, option_text, is_correct)
+                    VALUES (?, ?, ?)
+                ");
+
+                $stmt->execute([$qid, $opt, $is_correct]);
+            }
+
+            $success_message = "Question added successfully!";
+
+        } catch (Exception $e) {
+            $error_message = "Something went wrong!";
         }
-
-        $success_message = "Question added successfully!";
-
-    } catch (Exception $e) {
-        $error_message = "Something went wrong!";
     }
 }
 ?>
@@ -295,6 +305,9 @@ form button[type="submit"]:hover {
 
     <h3><i class="fas fa-edit"></i> Create New Question</h3>
 
+    <!-- 🔥 INFO COUNT -->
+    <p><strong>Total Questions:</strong> <?= $totalQuestions ?>/10</p>
+
     <form method="POST">
 
         <label>Question:</label>
@@ -320,19 +333,11 @@ form button[type="submit"]:hover {
             <option value="3">Option 4</option>
         </select>
 
-        <button type="submit">
+        <button type="submit" <?= ($totalQuestions >= 10 ? 'disabled' : '') ?>>
             <i class="fas fa-save"></i> Save Question
         </button>
 
     </form>
-
-    <?php if ($success_message): ?>
-        <p class="success"><i class="fas fa-check-circle"></i> <?= $success_message ?></p>
-    <?php endif; ?>
-
-    <?php if ($error_message): ?>
-        <p class="error"><i class="fas fa-times-circle"></i> <?= $error_message ?></p>
-    <?php endif; ?>
 
 </div>
 
@@ -353,6 +358,41 @@ function confirmLogout() {
     });
 }
 </script>
+
+<!-- 🔥 ALERT KALAU TAK CUKUP 10 -->
+<?php if ($totalQuestions < 10): ?>
+<script>
+Swal.fire({
+    icon: 'warning',
+    title: 'Not Enough Questions!',
+    text: 'Sila tambah sekurang-kurangnya 10 soalan. Sekarang hanya <?= $totalQuestions ?> sahaja.',
+});
+</script>
+<?php endif; ?>
+
+<!-- ✅ SUCCESS -->
+<?php if ($success_message): ?>
+<script>
+Swal.fire({
+    icon: 'success',
+    title: 'Success',
+    text: '<?= $success_message ?>',
+    timer: 2000,
+    showConfirmButton: false
+});
+</script>
+<?php endif; ?>
+
+<!-- ❌ ERROR -->
+<?php if ($error_message): ?>
+<script>
+Swal.fire({
+    icon: 'error',
+    title: 'Error',
+    text: '<?= $error_message ?>'
+});
+</script>
+<?php endif; ?>
 
 </body>
 </html>

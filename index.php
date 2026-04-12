@@ -8,7 +8,7 @@
   <div class="login-wrapper">
     <div class="login-box">
 
-      <h2>🔐 Phishing Simulator</h2>
+      <h2>Phishing Simulator</h2>
 
       <form class="login-form" method="POST" action="authenticate.php">
         <label>Username</label>

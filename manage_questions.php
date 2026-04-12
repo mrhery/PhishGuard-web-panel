@@ -326,31 +326,31 @@ td:last-child {
     <h3><i class="fas fa-database"></i> All Questions</h3>
 
     <table>
-        <tr>
-            <th>ID</th>
-            <th>Question</th>
-            <th>Actions</th>
-        </tr>
+    <tr>
+        <th>No</th>
+        <th>Question</th>
+        <th>Actions</th>
+    </tr>
 
-        <?php foreach ($questions as $q): ?>
-        <tr>
-            <td><?= $q['id'] ?></td>
-            <td><?= htmlspecialchars($q['question']) ?></td>
-            <td>
-                <a href="edit_question.php?id=<?= $q['id'] ?>" class="action-btn edit">
-                    <i class="fas fa-edit"></i> Edit
-                </a>
+    <?php $no = 1; ?>
+    <?php foreach ($questions as $q): ?>
+    <tr>
+        <td><?= $no++ ?></td>
+        <td><?= htmlspecialchars($q['question']) ?></td>
+        <td>
+            <a href="edit_question.php?id=<?= $q['id'] ?>" class="action-btn edit">
+                <i class="fas fa-edit"></i> Edit
+            </a>
 
-                <a href="?delete=<?= $q['id'] ?>" 
-                   class="action-btn delete"
-                   onclick="return confirm('Delete this question?')">
-                    <i class="fas fa-trash"></i> Delete
-                </a>
-            </td>
-        </tr>
-        <?php endforeach; ?>
-
-    </table>
+            <a href="?delete=<?= $q['id'] ?>" 
+               class="action-btn delete"
+               onclick="return confirm('Delete this question?')">
+                <i class="fas fa-trash"></i> Delete
+            </a>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>
 
 </div>
 
