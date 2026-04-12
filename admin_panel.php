@@ -233,6 +233,8 @@ form button[type="submit"]:hover {
     <div class="nav-bar">
         <button onclick="window.location.href='admin_panel.php'" class="active"><i class="fas fa-user-cog"></i> Admin Panel</button>
         <button onclick="window.location.href='dashboard.php'"><i class="fas fa-tachometer-alt"></i> Dashboard</button>
+        <button onclick="window.location.href='add_question.php'"><i class="fas fa-question-circle"></i> Add Question</button>
+        <button onclick="window.location.href='manage_questions.php'"><i class="fas fa-list"></i> Manage Questions</button>
         <button onclick="confirmLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
 

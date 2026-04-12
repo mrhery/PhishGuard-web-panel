@@ -61,7 +61,7 @@ if (isset($_POST['clear_data'])) {
         <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 
     <style>
-        /* ===== ROOT ===== */
+/* ===== ROOT ===== */
 :root {
     --primary: #1d4ed8;
     --sidebar: #0f172a;
@@ -80,17 +80,23 @@ body {
     font-family: 'Segoe UI', sans-serif;
     background: var(--bg);
     display: flex;
+    height: 100vh;
+    overflow: hidden;
 }
 
 /* ===== SIDEBAR ===== */
 .nav-bar {
-    width: 220px;
-    height: 100vh;
+    width: 240px;
     background: var(--sidebar);
     display: flex;
     flex-direction: column;
     padding: 20px 10px;
-    position: fixed;
+    transition: 0.3s;
+}
+
+/* OPTIONAL: collapse sidebar */
+.nav-bar.collapsed {
+    width: 70px;
 }
 
 .nav-bar button {
@@ -103,6 +109,7 @@ body {
     border-radius: 8px;
     cursor: pointer;
     transition: 0.2s;
+    width: 100%;
 }
 
 .nav-bar button:hover {
@@ -119,11 +126,11 @@ body {
     margin-right: 10px;
 }
 
-/* ===== MAIN CONTENT ===== */
+/* ===== MAIN CONTENT (FULL WIDTH) ===== */
 .container {
-    margin-left: 240px;
+    flex: 1; /* penting untuk full screen */
     padding: 30px;
-    width: 100%;
+    overflow-y: auto;
 }
 
 /* ===== HEADER ===== */
@@ -140,9 +147,10 @@ body {
 form, .email-template {
     background: var(--white);
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 12px;
     border: 1px solid var(--border);
     margin-top: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
 }
 
 /* ===== FORM ===== */
@@ -161,6 +169,7 @@ form textarea {
     border-radius: 6px;
     border: 1px solid var(--border);
     font-size: 14px;
+    transition: 0.2s;
 }
 
 form input:focus,
@@ -168,6 +177,7 @@ form select:focus,
 form textarea:focus {
     border-color: var(--primary);
     outline: none;
+    box-shadow: 0 0 0 2px rgba(29,78,216,0.1);
 }
 
 /* ===== FILE UPLOAD ===== */
@@ -244,15 +254,17 @@ form button[type="submit"]:hover {
 
 /* ===== RESPONSIVE ===== */
 @media(max-width:768px){
+    body {
+        flex-direction: column;
+    }
+
     .nav-bar {
         width: 100%;
-        height: auto;
         flex-direction: row;
-        position: relative;
+        overflow-x: auto;
     }
 
     .container {
-        margin-left: 0;
         padding: 20px;
     }
 }
@@ -263,6 +275,8 @@ form button[type="submit"]:hover {
     <div class="nav-bar">
         <button onclick="window.location.href='admin_panel.php'"><i class="fas fa-user-cog"></i> Admin Panel</button>
         <button class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</button>
+        <button onclick="window.location.href='add_question.php'"><i class="fas fa-question-circle"></i> Add Question</button>
+        <button onclick="window.location.href='manage_questions.php'"><i class="fas fa-list"></i> Manage Questions </button>
         <button onclick="confirmLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
 
@@ -288,6 +302,10 @@ form button[type="submit"]:hover {
                 <div class="stat-number"><i class="fas fa-user-shield"></i> <?= array_sum(array_column($results, 'data_submitted')) ?></div>
                 <div class="stat-label">Users Phished</div>
             </div>
+        </div>
+
+        <div>
+
         </div>
 
         <h3><i class="fas fa-table"></i> Campaign Results</h3>
@@ -451,5 +469,8 @@ form button[type="submit"]:hover {
             <?php endif; ?>
         });
     </script>
+
+
+
 </body>
 </html>
